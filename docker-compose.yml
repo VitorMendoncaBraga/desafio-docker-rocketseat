@@ -1,0 +1,34 @@
+services:
+  db:
+    image: bitnami/postgresql:latest
+    ports:
+      - 5482:5482
+    environment:
+      - POSTGRESQL_USER=${POSTGRESQL_USER}
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+      - POSTGRESQL_DB=${POSTGRESQL_DB}
+    networks:
+      - main-network
+    volumes:
+      - db:/var/lib/postgresql/data
+  
+  api:
+    build:
+      context: .
+    networks:
+      - main-network
+    ports:
+      - 3001:3000
+    depends_on:
+      - db
+    environment:
+      - PORT=${PORT}
+      - DATABASE_URL=${DATABASE_URL}
+  
+
+volumes:
+  db:
+
+networks:
+  main-network:
+    driver: bridge
